@@ -24,6 +24,9 @@ type Config struct {
 	// The name of the log group to write logs into. Required.
 	LogGroupName string
 
+	// The name of the log group to write logs into. Required.
+	LogStreamName string
+
 	// An optional function to report errors that couldn't be automatically
 	// handled during a PutLogEvents API call and caused a log events to be
 	// dropped.
@@ -75,7 +78,7 @@ func New(config *Config) (*Logger, error) {
 		name:          &config.LogGroupName,
 		svc:           config.Client,
 		retention:     config.Retention,
-		prefix:        randomHex(32),
+		prefix:        &config.LogStreamName,
 		batcher:       newBatcher(),
 		done:          make(chan bool),
 	}
@@ -180,7 +183,7 @@ func newLogStreams(lg *Logger) *logStreams {
 }
 
 func (ls *logStreams) new() error {
-	name := ls.logger.prefix + "." + strconv.Itoa(len(ls.streams))
+	name := ls.logger.prefix
 	stream := &logStream{
 		name:   &name,
 		logger: ls.logger,
