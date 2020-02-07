@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 	"sync"
 	"time"
 
@@ -78,7 +77,7 @@ func New(config *Config) (*Logger, error) {
 		name:          &config.LogGroupName,
 		svc:           config.Client,
 		retention:     config.Retention,
-		prefix:        &config.LogStreamName,
+		prefix:        config.LogStreamName,
 		batcher:       newBatcher(),
 		done:          make(chan bool),
 	}
