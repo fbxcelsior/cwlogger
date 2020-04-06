@@ -268,6 +268,13 @@ func (ls *logStream) create() error {
 		LogGroupName:  ls.logger.name,
 		LogStreamName: ls.name,
 	})
+
+	if awsErr, ok := err.(awserr.Error); ok {
+		if awsErr.Code() == cloudwatchlogs.ErrCodeResourceAlreadyExistsException {
+			return nil
+		}
+	}
+
 	return err
 }
 
